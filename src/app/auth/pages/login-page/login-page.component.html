@@ -1,0 +1,11 @@
+<p>login-page works!</p>
+<form 
+ [formGroup]="loginForm"
+ (ngSubmit)="onSubmit()"
+>
+    <input type="text" placeholder="Usuario" formControlName="email">
+    <input type="password" placeholder="Clave" formControlName="password">
+    <button type="submit">Ingresar</button>
+</form>
+
+<a routerLink="/auth/register">Registrate</a>
