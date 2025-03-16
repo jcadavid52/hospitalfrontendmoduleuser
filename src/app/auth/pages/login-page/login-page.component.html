@@ -3,9 +3,25 @@
  [formGroup]="loginForm"
  (ngSubmit)="onSubmit()"
 >
-    <input type="text" placeholder="Usuario" formControlName="email">
-    <input type="password" placeholder="Clave" formControlName="password">
+    <input type="text" placeholder="Usuario" formControlName="email"><br>
+    @if(loginForm.value.email == ''){
+
+        <span>Campo requerido</span><br>
+    }
+    <input type="password" placeholder="Clave" formControlName="password" ><br>
+    @if(loginForm.value.password == ''){
+
+        <span>Campo requerido</span><br>
+    }
     <button type="submit">Ingresar</button>
 </form>
+
+@if(hasError()){
+
+    <div>
+    revise la informacion ingresada
+    </div>
+}
+
 
 <a routerLink="/auth/register">Registrate</a>
