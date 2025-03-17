@@ -25,7 +25,7 @@ export class LoginPageComponent {
 
   onSubmit() {
     if (this.loginForm.invalid) {
-      console.log(this.loginForm);
+      
       this.hasError.set(true);
       setTimeout(() => {
         this.hasError.set(false);
@@ -35,12 +35,12 @@ export class LoginPageComponent {
 
     const { email = '', password = '' } = this.loginForm.value;
 
-    console.log({ email, password });
-
     this.authService.login(email!, password!).subscribe((isAuthenticated) => {
+     
       if (isAuthenticated) {
         this.router.navigateByUrl('/');
       }
+      
       this.hasError.set(true);
 
       setTimeout(() => {
