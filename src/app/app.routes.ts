@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
-import {  NotAutenticated } from './auth/Guards/auth.guard';
+import { noAuthGuard } from './auth/Guards/no-auth.guard';
 
 export const routes: Routes = [
     {
       path: 'auth',
       loadChildren:() => import('./auth/auth-front.routes'),
-      
+      canActivate: [
+        noAuthGuard
+      ],
     },
     {
       path:'',

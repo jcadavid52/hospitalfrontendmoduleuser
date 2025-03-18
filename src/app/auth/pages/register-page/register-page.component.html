@@ -1,1 +1,56 @@
 <p>register-page works!</p>
+
+<section>
+    <form
+    [formGroup]="registerForm"
+    (ngSubmit)="onSubmit()"
+    >
+    <input type="text" placeholder="fullName" formControlName="fullName"><br>
+    @if(registerForm.value.fullName == ''){
+
+        <span>Campo requerido</span><br>
+    }
+    <input type="text" placeholder="phoneNumber" formControlName="phoneNumber"><br>
+    @if(registerForm.value.phoneNumber == ''){
+
+        <span>Campo requerido</span><br>
+    }
+
+    <input type="number" placeholder="age" formControlName="age"><br>
+    @if(registerForm.value.age == ''){
+
+        <span>Campo requerido</span><br>
+    }
+
+    <input type="text" placeholder="address" formControlName="address"><br>
+    @if(registerForm.value.address == ''){
+
+        <span>Campo requerido</span><br>
+    }
+    
+    <input type="text" placeholder="email" formControlName="email"><br>
+    @if(registerForm.value.email == ''){
+
+        <span>Campo requerido</span><br>
+    }
+
+    <input type="password" placeholder="Clave" formControlName="password" ><br>
+    @if(registerForm.value.password == ''){
+
+        <span>Campo requerido</span><br>
+    }
+
+    <input type="password" placeholder="Confirm password" formControlName="confirmPassword" ><br>
+    @if(registerForm.value.password == ''){
+
+        <span>Campo requerido</span><br>
+    }
+    <button type="submit">Registrar</button>
+    </form>
+</section>
+@if(hasError()){
+
+    <div>
+    revise la informacion ingresada
+    </div>
+}

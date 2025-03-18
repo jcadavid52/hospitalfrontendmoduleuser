@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { AuthResponse } from '../interfaces/auth-response.interface';
 import { catchError, map, Observable, of, tap } from 'rxjs';
+import { RegisterUser } from '../interfaces/register-user.interface';
 
 
 type AuthStatus = 'checking' | 'authenticated' | 'no-authenticated';
@@ -15,19 +16,12 @@ const baseUrl = environment.baseUrl;
 export class AuthService{
   private _authStatus = signal<AuthStatus>('checking');
   private _user = signal<User | null>(null);
-  private _token = signal<string | null>(this.isLocalStorageAvailable()?localStorage.getItem('token'):null);
+  private _token = signal<string | null>(localStorage.getItem('token'));
 
   private http = inject(HttpClient);
 
-  // constructor() {
-  //   this.checkStatusToken().subscribe();
-  // }
 
- 
-
-
-
-  isLocalStorageAvailable(): boolean {
+  private isLocalStorageAvailable(): boolean {
     return typeof window !== 'undefined' && !!window.localStorage;
   }
 
@@ -61,7 +55,7 @@ export class AuthService{
   checkStatusToken(): Observable<boolean> {
     
     if (this.isLocalStorageAvailable()) {
-      
+     
       const token = localStorage.getItem('token');
       const id = localStorage.getItem('id');
 
@@ -119,5 +113,13 @@ export class AuthService{
     console.log(error)
     this.logout();
     return of(false);
+  }
+
+  register(userData:RegisterUser):Observable<boolean>{
+    return this.http.post<User>(`${baseUrl}/Account/Register`,userData)
+     .pipe(
+      map((resp) => true),
+      catchError((error:any) => {return of(false)})
+    );
   }
 }
