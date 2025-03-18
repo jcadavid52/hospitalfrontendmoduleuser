@@ -4,6 +4,7 @@ import { AppointmentPageComponent } from "./pages/appointment-page/appointment-p
 import { ProtectedPageComponent } from "./pages/protected-page/protected-page.component";
 import { NotfoundPageComponent } from "./pages/notfound-page/notfound-page.component";
 import { IndexPageComponent } from "./pages/index-page/index-page.component";
+import { NotAutenticated } from "../auth/Guards/auth.guard";
 
 export const ModuleUserRoutes:Routes = [
     {
@@ -13,15 +14,24 @@ export const ModuleUserRoutes:Routes = [
             
             {
                 path:'',
-                component:IndexPageComponent
+                component:IndexPageComponent,
+                
+                
             },
             {
                 path:'appointments',
-                component:AppointmentPageComponent
+                component:AppointmentPageComponent,
+                canActivate:[
+                    NotAutenticated
+                ]
+
             },
             {
                 path:'protected',
-                component:ProtectedPageComponent
+                component:ProtectedPageComponent,
+                canActivate:[
+                    NotAutenticated
+                ]
             },
             {
                 path:'**',

@@ -1,11 +1,9 @@
-import { computed, inject, Injectable, signal, } from '@angular/core';
+import { computed, HostListener, inject, Injectable, signal } from '@angular/core';
 import { User } from '../interfaces/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { AuthResponse } from '../interfaces/auth-response.interface';
 import { catchError, map, Observable, of, tap } from 'rxjs';
-
-
 
 
 type AuthStatus = 'checking' | 'authenticated' | 'no-authenticated';
@@ -14,27 +12,31 @@ const baseUrl = environment.baseUrl;
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService{
   private _authStatus = signal<AuthStatus>('checking');
   private _user = signal<User | null>(null);
-  private _token = signal<string | null>(null);
+  private _token = signal<string | null>(this.isLocalStorageAvailable()?localStorage.getItem('token'):null);
 
   private http = inject(HttpClient);
 
-   //TODO implementar el resource para verificar el status del token
-   constructor() {
+  // constructor() {
+  //   this.checkStatusToken().subscribe();
+  // }
+
  
-    this.checkStatusToken().subscribe();
+
+
+
+  isLocalStorageAvailable(): boolean {
+    return typeof window !== 'undefined' && !!window.localStorage;
   }
 
   authStatus = computed<AuthStatus>(() => {
-    
     if (this._authStatus() === 'checking') {
       return 'checking';
     }
 
     if (this._user() != null) {
-      
       return 'authenticated';
     }
 
@@ -45,7 +47,6 @@ export class AuthService {
   token = computed<string | null>(this._token);
 
   login(email: string, password: string): Observable<boolean> {
-  
     return this.http
       .post<AuthResponse>(`${baseUrl}/Account/Login`, {
         userName: email,
@@ -56,25 +57,32 @@ export class AuthService {
         catchError((error: any) => this.handleAuthError(error))
       );
   }
-
+ 
   checkStatusToken(): Observable<boolean> {
-    const token = localStorage.getItem('token');
-    const id = localStorage.getItem('id');
-
-    if (!token) {
+    
+    if (this.isLocalStorageAvailable()) {
       
-      this.logout();
-      return of(false);
+      const token = localStorage.getItem('token');
+      const id = localStorage.getItem('id');
+
+      if (!token) {
+        this.logout();
+        return of(false);
+      }
+
+      return this.http
+        .get<User>(`${baseUrl}/Account/StatusAuth?id=${id}`, {
+          // headers:{
+          //   Authorization:`Bearer ${token}`
+          // }
+        })
+        .pipe(
+          map((resp) => this.handleStatusAuthSuccess(resp, token)),
+          catchError((error: any) => this.handleAuthError(error))
+        );
     }
 
-    return this.http.get<User>(`${baseUrl}/Account/StatusAuth?id=${id}`,{
-      headers:{
-        Authorization:`Bearer ${token}`
-      }
-    }).pipe(
-      map((resp) => this.handleStatusAuthSuccess(resp, token)),
-      catchError((error:any) => this.handleAuthError(error))
-    )
+    return of(false);
   }
 
   logout() {
@@ -97,7 +105,8 @@ export class AuthService {
     return true;
   }
 
-  private handleStatusAuthSuccess(user:User,token:string){
+  private handleStatusAuthSuccess(user: User, token: string) {
+   
     this._user.set(user);
     this._authStatus.set('authenticated');
     this._token.set(token);
@@ -106,6 +115,8 @@ export class AuthService {
   }
 
   private handleAuthError(error: any) {
+   
+    console.log(error)
     this.logout();
     return of(false);
   }
