@@ -1,7 +1,7 @@
 <ul>
     @if(authService.authStatus() === 'authenticated'){
        <button (click)="logout()">Cerrar Sesión</button>
-       <p>Bienvenido,{{authService.user()?.fullName}} </p>
+       <p>Bienvenido, {{authService.user()?.fullName}}</p>
     }
     @else if (authService.authStatus() === 'no-authenticated' || authService.authStatus() === 'checking') {
 

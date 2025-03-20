@@ -68,9 +68,6 @@ export class RegisterPageComponent {
       phoneNumber: phoneNumber!,
     };
 
-    //TODO hacer registro
-    console.log(this.registerForm.value);
-
     this.authServie.register(userData).subscribe((isRegistered) => {
       if (isRegistered) {
         console.log('Registro existoso');
