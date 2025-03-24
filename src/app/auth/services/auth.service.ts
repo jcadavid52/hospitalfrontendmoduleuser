@@ -3,7 +3,7 @@ import { User } from '../interfaces/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { AuthResponse } from '../interfaces/auth-response.interface';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { RegisterUser } from '../interfaces/register-user.interface';
 
 
@@ -25,7 +25,7 @@ export class AuthService{
     return typeof window !== 'undefined' && !!window.localStorage;
   }
 
-  authStatus = computed<AuthStatus>(() => {
+ public authStatus = computed<AuthStatus>(() => {
     if (this._authStatus() === 'checking') {
       return 'checking';
     }
@@ -37,8 +37,8 @@ export class AuthService{
     return 'no-authenticated';
   });
 
-  user = computed<User | null>(this._user);
-  token = computed<string | null>(this._token);
+  public user = computed<User | null>(this._user);
+  public token = computed<string | null>(this._token);
 
   login(email: string, password: string): Observable<boolean> {
     return this.http
@@ -48,7 +48,10 @@ export class AuthService{
       })
       .pipe(
         map((resp) => this.handleAuthSuccess(resp)),
-        catchError((error: any) => this.handleAuthError(error))
+        catchError((error: any) => {
+          this.logout();
+          return this.handleError(error)
+        })
       );
   }
  
@@ -72,7 +75,7 @@ export class AuthService{
         })
         .pipe(
           map((resp) => this.handleStatusAuthSuccess(resp, token)),
-          catchError((error: any) => this.handleAuthError(error))
+          catchError((error: any) => this.handleError(error))
         );
     }
 
@@ -108,18 +111,16 @@ export class AuthService{
     return true;
   }
 
-  private handleAuthError(error: any) {
-   
-    console.log(error)
-    this.logout();
-    return of(false);
+  private handleError(error: any) {
+    // this.logout();
+    return throwError(() => new Error(error.error));
   }
 
   register(userData:RegisterUser):Observable<boolean>{
     return this.http.post<User>(`${baseUrl}/Account/Register`,userData)
      .pipe(
       map((resp) => true),
-      catchError((error:any) => {return of(false)})
+      catchError((error:any) => this.handleError(error))
     );
   }
 }

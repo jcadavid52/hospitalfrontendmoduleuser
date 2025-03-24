@@ -5,7 +5,7 @@
     }
     @else if (authService.authStatus() === 'no-authenticated' || authService.authStatus() === 'checking') {
 
-        <li><a routerLink="auth/login">Login</a></li>
+        <li><a routerLink="auth/login" routerLinkActive>Login</a></li>
         <li><a routerLink="auth/register">Registro</a></li>
     }
 

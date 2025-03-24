@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
 
+
 @Component({
   selector: 'app-index-page',
   standalone: true,

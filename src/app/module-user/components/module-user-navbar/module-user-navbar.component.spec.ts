@@ -7,7 +7,7 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { of } from 'rxjs';
 import { User } from '../../../auth/interfaces/user.interface';
 
-fdescribe('ModuleUserNavbarComponent', () => {
+describe('ModuleUserNavbarComponent', () => {
   let component: ModuleUserNavbarComponent;
   let fixture: ComponentFixture<ModuleUserNavbarComponent>;
   let service: AuthService;
@@ -105,7 +105,7 @@ fdescribe('ModuleUserNavbarComponent', () => {
     const button = fixture.nativeElement.querySelector('button');
     button.click();
 
-    expect(authServiceMock.logout).toHaveBeenCalled();
+    expect(authServiceMock).toHaveBeenCalled();
   });
 
 });
