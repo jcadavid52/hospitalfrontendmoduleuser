@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment.development';
 import { catchError, map, of } from 'rxjs';
 import { RegisterUser } from '../interfaces/register-user.interface';
 
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 

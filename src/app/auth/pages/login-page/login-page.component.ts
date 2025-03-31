@@ -18,9 +18,10 @@ export class LoginPageComponent {
 
   authService = inject(AuthService);
 
+
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    email: ['', [Validators.required]],
+    password: ['', [Validators.required]],
   });
 
   onSubmit() {
@@ -30,6 +31,7 @@ export class LoginPageComponent {
       setTimeout(() => {
         this.hasError.set(false);
       }, 2000);
+      this.loginForm.markAllAsTouched();
       return;
     }
 
@@ -47,5 +49,13 @@ export class LoginPageComponent {
         this.hasError.set(false);
       }, 2000);
     });
+  }
+
+  get emailField(){
+    return this.loginForm.get('email');
+  }
+
+  get passwordField(){
+    return this.loginForm.get('password');
   }
 }

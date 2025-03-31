@@ -1,27 +1,41 @@
 <p>login-page works!</p>
-<form 
- [formGroup]="loginForm"
- (ngSubmit)="onSubmit()"
->
-    <input type="text" placeholder="Usuario" formControlName="email"><br>
-    @if(loginForm.value.email == ''){
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <input
+    type="text"
+    placeholder="Usuario"
+    formControlName="email"
+    name="email"
+    id="email"
+    [attr.aria-invalid]="emailField?.touched ? emailField?.invalid : ''"
+  /><br />
+  @if(emailField?.touched && emailField?.errors){
+    
+  @if(emailField?.hasError('required')){
 
-        <span>Campo requerido</span><br>
-    }
-    <input type="password" placeholder="Clave" formControlName="password" ><br>
-    @if(loginForm.value.password == ''){
+  <span id="emailField-required">Requerido</span><br />
+  } }
 
-        <span>Campo requerido</span><br>
-    }
-    <button type="submit">Ingresar</button>
+  <input
+    type="password"
+    placeholder="Clave"
+    formControlName="password"
+    name="password"
+    id="password"
+    [attr.aria-invalid]="passwordField?.touched ? passwordField?.invalid : ''"
+  /><br />
+  @if(passwordField?.touched && passwordField?.errors){
+    @if(passwordField?.hasError('required')){
+
+    <span id="passwordField-required">Requerido</span><br />
+    } 
+}
+
+  <button type="submit">Ingresar</button>
 </form>
 
 @if(hasError()){
 
-    <div>
-    revise la informacion ingresada
-    </div>
+<div>revise la informacion ingresada</div>
 }
-
 
 <a routerLink="/auth/register">Registrate</a>

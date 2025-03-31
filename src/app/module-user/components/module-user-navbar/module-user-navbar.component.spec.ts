@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModuleUserNavbarComponent } from './module-user-navbar.component';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { of } from 'rxjs';
 import { User } from '../../../auth/interfaces/user.interface';
@@ -10,12 +10,7 @@ import { User } from '../../../auth/interfaces/user.interface';
 describe('ModuleUserNavbarComponent', () => {
   let component: ModuleUserNavbarComponent;
   let fixture: ComponentFixture<ModuleUserNavbarComponent>;
-  let service: AuthService;
   let authServiceMock: jasmine.SpyObj<AuthService>;
-
-  const fakeActivatedRoute = {
-    snapshot: { data: {} },
-  };
 
   beforeEach(async () => {
     authServiceMock = jasmine.createSpyObj('AuthService', [
@@ -26,17 +21,11 @@ describe('ModuleUserNavbarComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ModuleUserNavbarComponent],
       providers: [
-        AuthService,
-        HttpClient,
-        HttpHandler,
-        Router,
-        { provide: ActivatedRoute, useValue: fakeActivatedRoute },
+        provideRouter([]),
         { provide: AuthService, useValue: authServiceMock },
       ],
     }).compileComponents();
-    service = TestBed.inject(AuthService);
-    TestBed.inject(HttpClient);
-    TestBed.inject(Router);
+
     fixture = TestBed.createComponent(ModuleUserNavbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -74,7 +63,7 @@ describe('ModuleUserNavbarComponent', () => {
     authServiceMock.authStatus.and.returnValue('no-authenticated');
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    console.log(compiled)
+
     expect(compiled.querySelectorAll('a')[0].textContent).toEqual('Login');
     expect(compiled.querySelectorAll('a')[1].textContent).toEqual('Registro');
 
@@ -98,6 +87,8 @@ describe('ModuleUserNavbarComponent', () => {
       roles: ["Admin", "User"]
     }
 
+
+
     authServiceMock.authStatus.and.returnValue('authenticated');
     authServiceMock.user.and.returnValue(userMock);
     fixture.detectChanges();
@@ -105,7 +96,7 @@ describe('ModuleUserNavbarComponent', () => {
     const button = fixture.nativeElement.querySelector('button');
     button.click();
 
-    expect(authServiceMock).toHaveBeenCalled();
+    expect(authServiceMock.logout).toHaveBeenCalled();
   });
 
 });
