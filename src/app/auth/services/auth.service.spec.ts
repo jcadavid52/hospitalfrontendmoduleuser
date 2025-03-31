@@ -12,7 +12,7 @@ import { environment } from '../../../environments/environment.development';
 import { catchError, map, of } from 'rxjs';
 import { RegisterUser } from '../interfaces/register-user.interface';
 
-describe('AuthService', () => {
+fdescribe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
@@ -68,6 +68,57 @@ describe('AuthService', () => {
 
     expect(expectedResponse.token).toEqual(localStorage.getItem('token')!);
     expect(expectedResponse.userDto.id).toEqual(localStorage.getItem('id')!);
+  });
+
+  it('should check the status of the token and return a successful response.',() =>{
+
+    const userMock: User | null = {
+      id: '12345',
+      fullName: 'Juan Pérez',
+      userName: 'juanperez',
+      email: 'juanperez@example.com',
+      phoneNumber: '123-456-7890',
+      age: 30,
+      address: 'Calle Falsa 123, Ciudad, País',
+      roles: ['Admin', 'User'],
+    };
+    const expectedResponse: AuthResponse = {
+      token: 'token123456Zyx',
+      userDto: userMock,
+    };
+
+    service
+    .login('juanperez@example.com', 'Colombia2025*')
+    .subscribe((resp) => {
+      expect(resp).toEqual(true);
+      expect(service.authStatus()).toBe('authenticated');
+      expect(service.user()).not.toBeNull();
+      expect(service.token()).not.toBeNull();
+     
+    });
+
+    const req = httpMock.expectOne(`${baseUrl}/Account/Login`);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(expectedResponse);
+
+    service.checkStatusToken()
+    .subscribe((resp) => {
+      expect(resp).toEqual(true);
+      expect(service.authStatus()).toBe('authenticated');
+      expect(service.user()).not.toBeNull();
+      expect(service.token()).not.toBeNull();
+    })
+
+    const id = localStorage.getItem('id');
+
+    const reqCheckStatus = httpMock.expectOne(`${baseUrl}/Account/StatusAuth?id=${id}`)
+    expect(reqCheckStatus.request.method).toBe('GET');
+    
+    reqCheckStatus.flush(userMock)
+    
+
+
   });
 
   it('should is not authenticated and should no exist the properties id and token in the localStorage', () => {

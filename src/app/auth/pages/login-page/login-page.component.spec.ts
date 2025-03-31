@@ -7,7 +7,7 @@ import { By } from '@angular/platform-browser';
 import { Type } from '@angular/core';
 let authServiceMock: jasmine.SpyObj<AuthService>;
 
-fdescribe('LoginPageComponent', () => {
+describe('LoginPageComponent', () => {
   let component: LoginPageComponent;
   let fixture: ComponentFixture<LoginPageComponent>;
 

@@ -7,6 +7,7 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { of } from 'rxjs';
 import { User } from '../../../auth/interfaces/user.interface';
 
+
 describe('ModuleUserNavbarComponent', () => {
   let component: ModuleUserNavbarComponent;
   let fixture: ComponentFixture<ModuleUserNavbarComponent>;
@@ -27,6 +28,7 @@ describe('ModuleUserNavbarComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ModuleUserNavbarComponent);
+    // authServiceMock = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -96,7 +98,10 @@ describe('ModuleUserNavbarComponent', () => {
     const button = fixture.nativeElement.querySelector('button');
     button.click();
 
+    fixture.detectChanges();
+
     expect(authServiceMock.logout).toHaveBeenCalled();
+    
   });
 
 });
